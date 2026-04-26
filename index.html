@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spor Programı Yöneticisi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* BAŞLANGIC SAYFASI */
+        #startPage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            gap: 30px;
+        }
+
+        .start-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .start-header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .start-header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .start-btn {
+            padding: 25px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .btn-old {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-old:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(245, 87, 108, 0.4);
+        }
+
+        .btn-new {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn-new:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(79, 172, 254, 0.4);
+        }
+
+        /* PROGRAM LISTESI */
+        #programsPage {
+            display: none;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .page-header h2 {
+            color: #333;
+            font-size: 2em;
+        }
+
+        .back-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+
+        .programs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .program-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .program-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .program-name {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .program-summary {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .program-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .edit-btn {
+            background: #4facfe;
+            color: white;
+        }
+
+        .edit-btn:hover {
+            background: #0077be;
+        }
+
+        .delete-btn {
+            background: #f5576c;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: #c41c3b;
+        }
+
+        /* PROGRAM OLUŞTURMA/DÜZENLEME */
+        #programCreatorPage {
+            display: none;
+        }
+
+        .creator-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* HAFTA GÜNLERİ */
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .day-btn {
+            padding: 15px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+        }
+
+        .day-btn:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .day-btn.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        /* KAS GRUPLAR İ */
+        .muscle-group-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #555;
+            font-size: 0.95em;
+        }
+
+        .muscle-groups {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .muscle-btn {
+            padding: 15px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+            position: relative;
+        }
+
+        .muscle-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .muscle-btn.back { border-color: #3498db; }
+        .muscle-btn.bicep { border-color: #2ecc71; }
+        .muscle-btn.tricep { border-color: #e74c3c; }
+        .muscle-btn.chest { border-color: #f39c12; }
+        .muscle-btn.shoulder { border-color: #f1c40f; }
+        .muscle-btn.legs { border-color: #9b59b6; }
+        .muscle-btn.abs { border-color: #e91e63; }
+
+        .muscle-btn.back.selected { background: #3498db; color: white; }
+        .muscle-btn.bicep.selected { background: #2ecc71; color: white; }
+        .muscle-btn.tricep.selected { background: #e74c3c; color: white; }
+        .muscle-btn.chest.selected { background: #f39c12; color: white; }
+        .muscle-btn.shoulder.selected { background: #f1c40f; color: #333; }
+        .muscle-btn.legs.selected { background: #9b59b6; color: white; }
+        .muscle-btn.abs.selected { background: #e91e63; color: white; }
+
+        /* EGZERSİZLER */
+        .exercises-container {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .exercise-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid #667eea;
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 10px;
+            align-items: end;
+        }
+
+        .exercise-item input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        .remove-exercise-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .remove-exercise-btn:hover {
+            background: #c0392b;
+        }
+
+        /* GÜNÜN EGZERSİZLERİ ÖZETİ */
+        .day-exercises-summary {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #f39c12;
+            margin-top: 15px;
+        }
+
+        .day-exercises-summary h4 {
+            color: #856404;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        .exercise-summary-item {
+            display: flex;
+            justify-content: space-between;
+            color: #856404;
+            font-size: 0.9em;
+            padding: 5px 0;
+        }
+
+        /* BUTONLAR */
+        .button-group-horizontal {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .primary-btn,
+        .secondary-btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .primary-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .secondary-btn {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .secondary-btn:hover {
+            background: #d0d0d0;
+        }
+
+        /* UYARILAR VE MESAJLAR */
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .alert.error {
+            background: #fadbd8;
+            color: #922b21;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .alert.success {
+            background: #d5f4e6;
+            color: #0b5345;
+            border-left: 4px solid #27ae60;
+        }
+
+        .alert.info {
+            background: #d6eaf8;
+            color: #1a5276;
+            border-left: 4px solid #3498db;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+
+            .programs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .start-header h1 {
+                font-size: 2em;
+            }
+
+            .creator-container {
+                padding: 20px;
+            }
+
+            .exercise-item {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group-horizontal {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .empty-state-text {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+
+        .empty-state-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .empty-state-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(79, 172, 254, 0.3);
+        }
+
+        /* PROGRAM GÖRÜNTÜLEME */
+        #programViewPage {
+            display: none;
+        }
+
+        .view-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .view-header h2 {
+            color: #333;
+            font-size: 2em;
+            margin: 0;
+        }
+
+        .view-container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .program-title {
+            font-size: 2em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .program-meta {
+            text-align: center;
+            color: #999;
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+
+        .view-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .view-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .view-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border: none;
+        }
+
+        .view-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .view-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .view-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .view-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .day-cell {
+            font-weight: 600;
+            color: #333;
+            min-width: 100px;
+        }
+
+        .muscle-cell {
+            font-weight: 500;
+            color: #555;
+        }
+
+        .exercise-cell {
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        .sets-cell {
+            text-align: center;
+            font-weight: 600;
+            color: #764ba2;
+            min-width: 60px;
+        }
+
+        .view-summary {
+            margin-top: 40px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #f0f4ff 100%);
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .summary-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .summary-card-label {
+            color: #999;
+            font-size: 0.85em;
+            margin-bottom: 8px;
+        }
+
+        .summary-card-value {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .view-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .view-actions button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .edit-view-btn {
+            background: #4facfe;
+            color: white;
+        }
+
+        .edit-view-btn:hover {
+            background: #0077be;
+            transform: translateY(-2px);
+        }
+
+        .delete-view-btn {
+            background: #f5576c;
+            color: white;
+        }
+
+        .delete-view-btn:hover {
+            background: #c41c3b;
+            transform: translateY(-2px);
+        }
+
+        .back-view-btn {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .back-view-btn:hover {
+            background: #d0d0d0;
+            transform: translateY(-2px);
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <!-- BAŞLANGIC SAYFASI -->
+    <div id="startPage">
+        <div class="start-header">
+            <h1>💪 Spor Programı Yöneticisi</h1>
+            <p>Haftalık antrenman planınızı oluşturun ve düzenleyin</p>
+        </div>
+        <div class="button-group">
+            <button class="start-btn btn-old" onclick="showProgramsPage()">
+                📋 Eski Programlar
+            </button>
+            <button class="start-btn btn-new" onclick="showCreatorPage()">
+                ➕ Yeni Program Oluştur
+            </button>
+        </div>
+    </div>
+
+    <!-- PROGRAM LISTESI SAYFASI -->
+    <div id="programsPage">
+        <div class="container">
+            <div class="page-header">
+                <h2>📋 Kaydedilmiş Programlar</h2>
+                <button class="back-btn" onclick="showStartPage()">← Geri Dön</button>
+            </div>
+
+            <div id="programsList" class="programs-grid"></div>
+
+            <div id="emptyProgramsState" class="empty-state" style="display: none;">
+                <div class="empty-state-icon">📭</div>
+                <div class="empty-state-text">Henüz kaydedilmiş program yok</div>
+                <button class="empty-state-btn" onclick="showCreatorPage()">Yeni Program Oluştur</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROGRAM GÖRÜNTÜLEME SAYFASI -->
+    <div id="programViewPage">
+        <div class="container">
+            <div class="view-header">
+                <h2>👁️ Programı Görüntüle</h2>
+                <button class="back-btn" onclick="showProgramsPage()">← Geri Dön</button>
+            </div>
+
+            <div class="view-container">
+                <div class="program-title" id="viewProgramTitle"></div>
+                <div class="program-meta" id="viewProgramMeta"></div>
+
+                <table class="view-table" id="programDetailsTable">
+                    <thead>
+                        <tr>
+                            <th>📅 Gün</th>
+                            <th>💪 Kas Grubu</th>
+                            <th>🏋️ Egzersiz</th>
+                            <th>⚡ Set</th>
+                        </tr>
+                    </thead>
+                    <tbody id="programDetailsBody">
+                    </tbody>
+                </table>
+
+                <div class="view-summary" id="viewSummary"></div>
+
+                <div class="view-actions">
+                    <button class="edit-view-btn" onclick="editFromView()" title="Bu programı düzenle">✏️ Düzenle</button>
+                    <button class="delete-view-btn" onclick="deleteFromView()" title="Bu programı sil">🗑️ Sil</button>
+                    <button class="back-view-btn" onclick="showProgramsPage()" title="Geri dön">← Geri Dön</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROGRAM OLUŞTURMA/DÜZENLEME SAYFASI -->
+    <div id="programCreatorPage">
+        <div class="container">
+            <div class="page-header">
+                <h2 id="creatorTitle">➕ Yeni Program Oluştur</h2>
+                <button class="back-btn" onclick="goBackFromCreator()">← Geri Dön</button>
+            </div>
+
+            <div class="creator-container">
+                <div id="alertContainer"></div>
+
+                <!-- PROGRAM İSMİ -->
+                <div class="form-section">
+                    <h3>📝 Program Bilgileri</h3>
+                    <div class="form-group">
+                        <label for="programName">Program Adı *</label>
+                        <input type="text" id="programName" placeholder="ör: Üst Vücut Programı" maxlength="50">
+                    </div>
+                </div>
+
+                <!-- GÜN SEÇİMİ -->
+                <div class="form-section">
+                    <h3>📅 Güne Tıklayarak Başlayın</h3>
+                    <div class="muscle-group-info">
+                        Aşağıda bir gün seçin ve o gün için kas grupları ekleyin
+                    </div>
+                    <div class="days-grid" id="daysContainer"></div>
+                </div>
+
+                <!-- KAS GROUPU SEÇİMİ -->
+                <div class="form-section">
+                    <h3>💪 Kas Grupları</h3>
+                    <div class="muscle-group-info" id="muscleInfo">
+                        Önce yukarıda bir gün seçin
+                    </div>
+                    <div class="muscle-groups" id="muscleGroupsContainer"></div>
+                </div>
+
+                <!-- EGZERSİZLER -->
+                <div class="form-section">
+                    <h3>🏋️ Egzersizler</h3>
+                    <div class="muscle-group-info" id="exerciseInfo">
+                        Kas grubu seçerek başlayın
+                    </div>
+                    <div id="exercisesContainer" class="exercises-container" style="display: none;">
+                        <div id="exercisesList"></div>
+                        <button type="button" class="secondary-btn" style="width: 100%; margin-top: 12px;" onclick="addExerciseField()">+ Egzersiz Ekle</button>
+                    </div>
+                    <div class="day-exercises-summary" id="dayExercisesSummary" style="display: none;"></div>
+                </div>
+
+                <!-- AKSIYON BUTONLARI -->
+                <div class="button-group-horizontal">
+                    <button class="primary-btn" onclick="saveProgram()">✅ Programı Kaydet</button>
+                    <button class="secondary-btn" onclick="goBackFromCreator()">❌ İptal Et</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // KAS GRUPLAR AYARLANMA
+        const muscleGroups = [
+            { name: 'Back', label: 'Sırt', color: 'back' },
+            { name: 'Bicep', label: 'Biceps', color: 'bicep' },
+            { name: 'Tricep', label: 'Triceps', color: 'tricep' },
+            { name: 'Chest', label: 'Göğüs', color: 'chest' },
+            { name: 'Shoulder', label: 'Omuz', color: 'shoulder' },
+            { name: 'Legs', label: 'Bacaklar', color: 'legs' },
+            { name: 'Abs', label: 'Karın', color: 'abs' }
+        ];
+
+        const days = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'];
+
+        // GLOBAL STATE
+        let currentProgram = null;
+        let selectedDay = null;
+        let selectedMuscles = {}; // {day: [muscle1, muscle2, ...]}
+        let exercises = {}; // {day-muscle: [{name, sets}, ...]}
+        let editingProgramId = null;
+
+        // INITIALIZATION
+        function init() {
+            renderDays();
+            renderMuscleGroups();
+            loadPrograms();
+        }
+
+        // SAYFA YÖNETİMİ
+        function showStartPage() {
+            document.getElementById('startPage').style.display = 'flex';
+            document.getElementById('programsPage').style.display = 'none';
+            document.getElementById('programCreatorPage').style.display = 'none';
+        }
+
+        function showProgramsPage() {
+            document.getElementById('startPage').style.display = 'none';
+            document.getElementById('programsPage').style.display = 'block';
+            document.getElementById('programCreatorPage').style.display = 'none';
+            loadPrograms();
+        }
+
+        function showCreatorPage(programId = null) {
+            document.getElementById('startPage').style.display = 'none';
+            document.getElementById('programsPage').style.display = 'none';
+            document.getElementById('programCreatorPage').style.display = 'block';
+
+            resetCreator();
+
+            if (programId) {
+                editingProgramId = programId;
+                const programs = JSON.parse(localStorage.getItem('programs')) || [];
+                const program = programs.find(p => p.id === programId);
+                if (program) {
+                    document.getElementById('creatorTitle').textContent = '✏️ Programı Düzenle';
+                    document.getElementById('programName').value = program.name;
+                    selectedMuscles = JSON.parse(JSON.stringify(program.selectedMuscles));
+                    exercises = JSON.parse(JSON.stringify(program.exercises));
+                    updateCreatorUI();
+                }
+            } else {
+                document.getElementById('creatorTitle').textContent = '➕ Yeni Program Oluştur';
+                editingProgramId = null;
+            }
+        }
+
+        function goBackFromCreator() {
+            if (editingProgramId) {
+                showProgramsPage();
+            } else {
+                showStartPage();
+            }
+        }
+
+        // GÜNDÜ SEÇ
+        function renderDays() {
+            const container = document.getElementById('daysContainer');
+            container.innerHTML = '';
+            days.forEach((day, index) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'day-btn';
+                btn.textContent = day.substring(0, 3);
+                btn.title = day;
+                btn.onclick = () => selectDay(index);
+                container.appendChild(btn);
+            });
+        }
+
+        function selectDay(dayIndex) {
+            selectedDay = dayIndex;
+            updateCreatorUI();
+            showAlert(`${days[dayIndex]} seçildi`, 'info');
+        }
+
+        // KAS GRUPLARINI RENDER ET
+        function renderMuscleGroups() {
+            const container = document.getElementById('muscleGroupsContainer');
+            container.innerHTML = '';
+
+            if (selectedDay === null) {
+                container.style.display = 'none';
+                document.getElementById('muscleInfo').innerHTML = '⚠️ Önce yukarıda bir gün seçin';
+                return;
+            }
+
+            container.style.display = 'grid';
+            const key = days[selectedDay];
+
+            if (!selectedMuscles[key]) {
+                selectedMuscles[key] = [];
+            }
+
+            muscleGroups.forEach(muscle => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = `muscle-btn ${muscle.color}`;
+                if (selectedMuscles[key].includes(muscle.name)) {
+                    btn.classList.add('selected');
+                }
+                btn.textContent = muscle.label;
+                btn.onclick = () => toggleMuscle(muscle.name);
+                container.appendChild(btn);
+            });
+
+            document.getElementById('muscleInfo').innerHTML = `<strong>${days[selectedDay]}</strong> için kas grupları seçin (birden fazla seçebilirsiniz)`;
+        }
+
+        function toggleMuscle(muscleName) {
+            const key = days[selectedDay];
+            if (!selectedMuscles[key]) {
+                selectedMuscles[key] = [];
+            }
+
+            const index = selectedMuscles[key].indexOf(muscleName);
+            if (index > -1) {
+                selectedMuscles[key].splice(index, 1);
+            } else {
+                selectedMuscles[key].push(muscleName);
+            }
+
+            renderMuscleGroups();
+            updateExercisesUI();
+        }
+
+        // EGZERSİZ ALANLARINI GÜNCELLE
+        function updateExercisesUI() {
+            const key = days[selectedDay];
+            const selectedMuscleList = selectedMuscles[key] || [];
+
+            if (selectedMuscleList.length === 0) {
+                document.getElementById('exercisesContainer').style.display = 'none';
+                document.getElementById('dayExercisesSummary').style.display = 'none';
+                document.getElementById('exerciseInfo').innerHTML = '⚠️ Kas grubu seçin';
+                return;
+            }
+
+            document.getElementById('exercisesContainer').style.display = 'block';
+            document.getElementById('exerciseInfo').innerHTML = `✅ <strong>${selectedMuscleList.join(', ')}</strong> için egzersizleri girin`;
+
+            const exercisesList = document.getElementById('exercisesList');
+            exercisesList.innerHTML = '';
+
+            selectedMuscleList.forEach(muscle => {
+                const muscleKey = `${key}-${muscle}`;
+                if (!exercises[muscleKey]) {
+                    exercises[muscleKey] = [];
+                }
+
+                const muscleLabel = muscleGroups.find(m => m.name === muscle)?.label || muscle;
+                const title = document.createElement('h4');
+                title.style.marginTop = '20px';
+                title.style.marginBottom = '10px';
+                title.style.color = '#333';
+                title.textContent = muscleLabel;
+                exercisesList.appendChild(title);
+
+                const muscleExercises = exercises[muscleKey];
+                muscleExercises.forEach((exercise, index) => {
+                    const item = createExerciseItem(muscleKey, index, exercise);
+                    exercisesList.appendChild(item);
+                });
+
+                const addBtn = document.createElement('button');
+                addBtn.type = 'button';
+                addBtn.className = 'secondary-btn';
+                addBtn.style.width = '100%';
+                addBtn.style.marginTop = '10px';
+                addBtn.textContent = `+ ${muscleLabel} Egzersizi Ekle`;
+                addBtn.onclick = () => addExerciseForMuscle(muscleKey);
+                exercisesList.appendChild(addBtn);
+            });
+
+            updateDayExercisesSummary();
+        }
+
+        function createExerciseItem(muscleKey, index, exercise) {
+            const item = document.createElement('div');
+            item.className = 'exercise-item';
+            item.innerHTML = `
+                <div>
+                    <label style="display: block; font-size: 0.85em; margin-bottom: 5px; color: #666;">Hareket Adı</label>
+                    <input type="text" placeholder="ör: Bench Press" value="${exercise.name || ''}" maxlength="40" onchange="updateExerciseName('${muscleKey}', ${index}, this.value)">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.85em; margin-bottom: 5px; color: #666;">Set Sayısı</label>
+                    <input type="number" placeholder="3" min="1" max="10" value="${exercise.sets || ''}" onchange="updateExerciseSets('${muscleKey}', ${index}, this.value)">
+                </div>
+                <button type="button" class="remove-exercise-btn" onclick="removeExercise('${muscleKey}', ${index})">Sil</button>
+            `;
+            return item;
+        }
+
+        function addExerciseForMuscle(muscleKey) {
+            if (!exercises[muscleKey]) {
+                exercises[muscleKey] = [];
+            }
+            exercises[muscleKey].push({ name: '', sets: '' });
+            updateExercisesUI();
+        }
+
+        function updateExerciseName(muscleKey, index, value) {
+            exercises[muscleKey][index].name = value;
+            updateDayExercisesSummary();
+        }
+
+        function updateExerciseSets(muscleKey, index, value) {
+            exercises[muscleKey][index].sets = parseInt(value) || 0;
+            updateDayExercisesSummary();
+        }
+
+        function removeExercise(muscleKey, index) {
+            exercises[muscleKey].splice(index, 1);
+            updateExercisesUI();
+        }
+
+        // GÜN EGZERSİZLERİ ÖZETİ
+        function updateDayExercisesSummary() {
+            const key = days[selectedDay];
+            const summary = document.getElementById('dayExercisesSummary');
+
+            const selectedMuscleList = selectedMuscles[key] || [];
+            let totalSets = 0;
+            let muscleSetCounts = {};
+
+            selectedMuscleList.forEach(muscle => {
+                const muscleKey = `${key}-${muscle}`;
+                const muscleExercises = exercises[muscleKey] || [];
+                const muscleTotal = muscleExercises.reduce((sum, ex) => sum + (parseInt(ex.sets) || 0), 0);
+                if (muscleTotal > 0) {
+                    const muscleLabel = muscleGroups.find(m => m.name === muscle)?.label || muscle;
+                    muscleSetCounts[muscleLabel] = muscleTotal;
+                    totalSets += muscleTotal;
+                }
+            });
+
+            if (totalSets > 0) {
+                summary.style.display = 'block';
+                let html = `<h4>📊 ${days[selectedDay]} Özeti</h4>`;
+                Object.entries(muscleSetCounts).forEach(([muscle, sets]) => {
+                    html += `<div class="exercise-summary-item"><span>${muscle}</span><strong>${sets} set</strong></div>`;
+                });
+                html += `<div class="exercise-summary-item" style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #d4a574; font-weight: bold;"><span>Toplam</span><strong>${totalSets} set</strong></div>`;
+                summary.innerHTML = html;
+            } else {
+                summary.style.display = 'none';
+            }
+        }
+
+        // PROGRAMI KAYDET
+        function saveProgram() {
+            const programName = document.getElementById('programName').value.trim();
+
+            // VALIDASYON
+            if (!programName) {
+                showAlert('Program adı girin!', 'error');
+                return;
+            }
+
+            if (Object.keys(selectedMuscles).length === 0) {
+                showAlert('En az bir gün için kas grubu seçin!', 'error');
+                return;
+            }
+
+            const hasExercises = Object.keys(exercises).some(key => {
+                const exs = exercises[key] || [];
+                return exs.some(ex => ex.name && ex.sets);
+            });
+
+            if (!hasExercises) {
+                showAlert('En az bir egzersiz ekleyin!', 'error');
+                return;
+            }
+
+            try {
+                const program = {
+                    id: editingProgramId || Date.now().toString(),
+                    name: programName,
+                    selectedMuscles: selectedMuscles,
+                    exercises: exercises,
+                    createdAt: editingProgramId ? new Date(parseInt(editingProgramId)).toLocaleString('tr-TR') : new Date().toLocaleString('tr-TR')
+                };
+
+                let programs = [];
+                try {
+                    const stored = localStorage.getItem('programs');
+                    if (stored) {
+                        programs = JSON.parse(stored);
+                    }
+                } catch (e) {
+                    console.log('LocalStorage okuma hatası, yeni program listesi oluşturuluyor');
+                    programs = [];
+                }
+
+                if (editingProgramId) {
+                    const index = programs.findIndex(p => p.id === editingProgramId);
+                    if (index > -1) {
+                        programs[index] = program;
+                    }
+                } else {
+                    programs.push(program);
+                }
+
+                try {
+                    localStorage.setItem('programs', JSON.stringify(programs));
+                } catch (e) {
+                    console.error('LocalStorage yazma hatası:', e);
+                    alert('Program kaydedilemedi. Lütfen tarayıcı settings kontrol ediniz.');
+                }
+                showAlert(`Program '${programName}' başarıyla kaydedildi! ✅`, 'success');
+
+                setTimeout(() => {
+                    showProgramsPage();
+                }, 1500);
+            } catch (error) {
+                console.error('Kayıt hatası:', error);
+                showAlert('Program kaydedilirken hata oluştu. Lütfen tekrar deneyin.', 'error');
+            }
+        }
+
+        // PROGRAMLARI YÜKLEYİ
+        function loadPrograms() {
+            const programs = JSON.parse(localStorage.getItem('programs')) || [];
+            const programsList = document.getElementById('programsList');
+            const emptyState = document.getElementById('emptyProgramsState');
+
+            if (programs.length === 0) {
+                programsList.innerHTML = '';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            programsList.innerHTML = '';
+
+            programs.forEach(program => {
+                const card = document.createElement('div');
+                card.className = 'program-card';
+                card.innerHTML = `
+                    <div class="program-name">${program.name}</div>
+                    <div class="program-summary" id="summary-${program.id}">
+                        ${generateSummary(program)}
+                    </div>
+                    <div class="program-actions">
+                        <button class="action-btn edit-btn" onclick="showCreatorPage('${program.id}')" title="Düzenle">✏️ Düzenle</button>
+                        <button class="action-btn edit-btn" onclick="showProgramView('${program.id}')" title="Görüntüle" style="background: #27ae60;">👁️ Görüntüle</button>
+                        <button class="action-btn delete-btn" onclick="deleteProgram('${program.id}', '${program.name}')">🗑️ Sil</button>
+                    </div>
+                `;
+                programsList.appendChild(card);
+            });
+        }
+
+        // PROGRAM ÖZETİ OLUŞTUR
+        function generateSummary(program) {
+            const muscleTotals = {};
+
+            days.forEach((day, index) => {
+                const dayKey = day;
+                const dayMuscles = program.selectedMuscles[dayKey] || [];
+                dayMuscles.forEach(muscle => {
+                    const exerciseKey = `${dayKey}-${muscle}`;
+                    const dayExercises = program.exercises[exerciseKey] || [];
+                    const dayTotal = dayExercises.reduce((sum, ex) => sum + (parseInt(ex.sets) || 0), 0);
+                    if (!muscleTotals[muscle]) {
+                        muscleTotals[muscle] = 0;
+                    }
+                    muscleTotals[muscle] += dayTotal;
+                });
+            });
+
+            if (Object.keys(muscleTotals).length === 0) {
+                return '<em style="color: #999;">Egzersiz yok</em>';
+            }
+
+            let html = '';
+            Object.entries(muscleTotals).forEach(([muscle, total]) => {
+                const label = muscleGroups.find(m => m.name === muscle)?.label || muscle;
+                html += `<div class="summary-item"><span>${label}</span><strong>${total} set</strong></div>`;
+            });
+
+            return html;
+        }
+
+        // PROGRAMI SİL
+        function deleteProgram(programId, programName) {
+            if (confirm(`"${programName}" programını silmek istediğinize emin misiniz?`)) {
+                let programs = JSON.parse(localStorage.getItem('programs')) || [];
+                programs = programs.filter(p => p.id !== programId);
+                try {
+                    localStorage.setItem('programs', JSON.stringify(programs));
+                } catch (e) {
+                    console.error('LocalStorage yazma hatası:', e);
+                }
+                showAlert(`Program '${programName}' silindi ✅`, 'success');
+                loadPrograms();
+            }
+        }
+
+        // YARDIMCI FONKSİYONLAR
+        function resetCreator() {
+            document.getElementById('programName').value = '';
+            selectedDay = null;
+            selectedMuscles = {};
+            exercises = {};
+            editingProgramId = null;
+            document.getElementById('alertContainer').innerHTML = '';
+            renderDays();
+            renderMuscleGroups();
+            document.getElementById('exercisesContainer').style.display = 'none';
+            document.getElementById('dayExercisesSummary').style.display = 'none';
+        }
+
+        function updateCreatorUI() {
+            renderDays();
+            renderMuscleGroups();
+            updateExercisesUI();
+        }
+
+        function showAlert(message, type = 'info') {
+            const container = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert ${type}`;
+            alert.textContent = message;
+            container.innerHTML = '';
+            container.appendChild(alert);
+
+            if (type !== 'error') {
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        // PROGRAM GÖRÜNTÜLEME
+        let currentViewedProgramId = null;
+
+        function showProgramView(programId) {
+            currentViewedProgramId = programId;
+            const programs = JSON.parse(localStorage.getItem('programs')) || [];
+            const program = programs.find(p => p.id === programId);
+
+            if (!program) {
+                alert('Program bulunamadı');
+                return;
+            }
+
+            // Sayfa değiştir
+            document.getElementById('startPage').style.display = 'none';
+            document.getElementById('programsPage').style.display = 'none';
+            document.getElementById('programCreatorPage').style.display = 'none';
+            document.getElementById('programViewPage').style.display = 'block';
+
+            // Başlık ve meta
+            document.getElementById('viewProgramTitle').textContent = program.name;
+            document.getElementById('viewProgramMeta').textContent = `Oluşturulma: ${program.createdAt}`;
+
+            // Tabloyu oluştur
+            renderProgramDetails(program);
+
+            // Özeti oluştur
+            renderProgramSummary(program);
+        }
+
+        function renderProgramDetails(program) {
+            const tbody = document.getElementById('programDetailsBody');
+            tbody.innerHTML = '';
+
+            let hasData = false;
+
+            // Her gün için
+            days.forEach((day, dayIndex) => {
+                const dayKey = day;
+                const dayMuscles = program.selectedMuscles[dayKey] || [];
+
+                if (dayMuscles.length === 0) {
+                    return; // Bu gün için veri yok
+                }
+
+                // Her kas grubu için
+                dayMuscles.forEach((muscle, muscleIndex) => {
+                    const muscleKey = `${dayKey}-${muscle}`;
+                    const muscleLabel = muscleGroups.find(m => m.name === muscle)?.label || muscle;
+                    const muscleExercises = program.exercises[muscleKey] || [];
+
+                    if (muscleExercises.length === 0) {
+                        // Kas grubu var ama egzersiz yok - satır ekle
+                        const row = tbody.insertRow();
+                        row.insertCell(0).textContent = day;
+                        row.insertCell(1).textContent = muscleLabel;
+                        row.insertCell(2).textContent = '-';
+                        row.insertCell(3).textContent = '-';
+                        row.cells[0].className = 'day-cell';
+                        row.cells[1].className = 'muscle-cell';
+                        row.cells[2].className = 'exercise-cell';
+                        row.cells[3].className = 'sets-cell';
+                        hasData = true;
+                        return;
+                    }
+
+                    // Her egzersiz için
+                    muscleExercises.forEach((exercise, exIndex) => {
+                        const row = tbody.insertRow();
+
+                        // Gün ve kas grubu bilgisi
+                        if (exIndex === 0) {
+                            // İlk egzersizde gün ve kas grubu yaz
+                            row.insertCell(0).textContent = muscleIndex === 0 ? day : '';
+                            row.insertCell(1).textContent = muscleLabel;
+                        } else {
+                            // Sonraki egzersizlerde boş bırak
+                            row.insertCell(0).textContent = '';
+                            row.insertCell(1).textContent = '';
+                        }
+
+                        // Egzersiz adı ve set
+                        row.insertCell(2).textContent = exercise.name || '-';
+                        row.insertCell(3).textContent = exercise.sets || '-';
+
+                        // Stil uygula
+                        row.cells[0].className = 'day-cell';
+                        row.cells[1].className = 'muscle-cell';
+                        row.cells[2].className = 'exercise-cell';
+                        row.cells[3].className = 'sets-cell';
+                        hasData = true;
+                    });
+                });
+            });
+
+            if (!hasData) {
+                const row = tbody.insertRow();
+                const cell = row.insertCell(0);
+                cell.colSpan = 4;
+                cell.className = 'no-data';
+                cell.textContent = 'Bu programda egzersiz bulunmuyor';
+            }
+        }
+
+        function renderProgramSummary(program) {
+            const summary = document.getElementById('viewSummary');
+            const muscleTotals = {};
+
+            // Tüm haftada kas grup toplamlarını hesapla
+            days.forEach((day) => {
+                const dayKey = day;
+                const dayMuscles = program.selectedMuscles[dayKey] || [];
+                dayMuscles.forEach(muscle => {
+                    const muscleKey = `${dayKey}-${muscle}`;
+                    const exercises = program.exercises[muscleKey] || [];
+                    const total = exercises.reduce((sum, ex) => sum + (parseInt(ex.sets) || 0), 0);
+                    if (!muscleTotals[muscle]) {
+                        muscleTotals[muscle] = 0;
+                    }
+                    muscleTotals[muscle] += total;
+                });
+            });
+
+            let summaryHTML = '<div class="summary-title">📊 Haftalık Özet</div>';
+            summaryHTML += '<div class="summary-grid">';
+
+            let totalAllSets = 0;
+            Object.entries(muscleTotals).forEach(([muscle, total]) => {
+                const label = muscleGroups.find(m => m.name === muscle)?.label || muscle;
+                summaryHTML += `
+                    <div class="summary-card">
+                        <div class="summary-card-label">${label}</div>
+                        <div class="summary-card-value">${total}</div>
+                    </div>
+                `;
+                totalAllSets += total;
+            });
+
+            summaryHTML += `
+                <div class="summary-card">
+                    <div class="summary-card-label">Toplam Set</div>
+                    <div class="summary-card-value">${totalAllSets}</div>
+                </div>
+            `;
+
+            summaryHTML += '</div>';
+            summary.innerHTML = summaryHTML;
+        }
+
+        function editFromView() {
+            showCreatorPage(currentViewedProgramId);
+        }
+
+        function deleteFromView() {
+            const programs = JSON.parse(localStorage.getItem('programs')) || [];
+            const program = programs.find(p => p.id === currentViewedProgramId);
+            if (program) {
+                deleteProgram(currentViewedProgramId, program.name);
+                setTimeout(() => {
+                    showProgramsPage();
+                }, 500);
+            }
+        }
+
+        // BAŞLANGIC
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
